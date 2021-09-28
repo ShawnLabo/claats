@@ -105,7 +105,13 @@ func createIndex(files []string, opt Option) error {
 		Labs:  labs,
 	}
 
-	if err := t.Execute(os.Stdout, data); err != nil {
+	f, err := os.OpenFile(filepath.Join(opt.Out, "index.html"), os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return fmt.Errorf("os.Open: %w", err)
+	}
+	defer f.Close()
+
+	if err := t.Execute(f, data); err != nil {
 		return fmt.Errorf("t.Execute: %w", err)
 	}
 
